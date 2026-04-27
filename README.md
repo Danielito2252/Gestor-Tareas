@@ -43,57 +43,57 @@ Aplicación web fullstack para gestionar tareas personales, construida con Flask
 ### Pasos
 
 1. Clona el repositorio
-\`\`\`bash
-git clone https://github.com/Danielito2252/Gestor-Tareas-Personal.git
+bash
+git clone https://github.com/Danielito2252/Gestor-Tareas-.git
 cd Gestor-Tareas-Personal
-\`\`\`
+
 
 2. Crea y activa el entorno virtual
-\`\`\`bash
+bash
 python -m venv venv
 venv\Scripts\activate  # Windows
-\`\`\`
+
 
 3. Instala las dependencias
-\`\`\`bash
+bash
 pip install -r requirements.txt
-\`\`\`
+
 
 4. Crea el archivo de configuración
-\`\`\`bash
+bash
 # Crea un archivo config.py con tus credenciales de PostgreSQL
-\`\`\`
 
-\`\`\`python
+
+python
 DB_CONFIG = {
     "host": "localhost",
     "port": 5432,
-    "database": "todo_app",
+    "database": "Gestor-Tareas",
     "user": "postgres",
     "password": "TU_CONTRASEÑA"
 }
-\`\`\`
+
 
 5. Crea la base de datos en PostgreSQL
-\`\`\`sql
+sql
 CREATE DATABASE Gestor-Tareas;
-\`\`\`
+
 
 6. Corre la aplicación
-\`\`\`bash
+bash
 python app.py
-\`\`\`
+
 
 7. Abre en tu navegador
-\`\`\`
+
 http://127.0.0.1:5000
-\`\`\`
+
 
 ---
 
 ## 📁 Estructura del proyecto
 
-\`\`\`
+
 Gestor-Tareas-Personal/
 │
 ├── static/
@@ -110,7 +110,7 @@ Gestor-Tareas-Personal/
 ├── requirements.txt     # Dependencias del proyecto
 ├── Procfile             # Configuración para despliegue
 └── README.md            # Este archivo
-\`\`\`
+
 
 ---
 
