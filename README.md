@@ -9,6 +9,14 @@ Aplicación web fullstack para gestionar tareas personales, construida con Flask
 
 ---
 
+## 📸 Vista previa
+
+### Login
+![Login](screenshots/login.png)
+
+### App principal
+![App](screenshots/app.png)
+
 ## ✨ Funcionalidades
 
 - ✅ Registro e inicio de sesión de usuarios
