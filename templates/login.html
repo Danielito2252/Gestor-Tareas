@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Iniciar Sesión</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <div class="container auth-container">
+        <h1>📝 Mis Tareas</h1>
+        <p class="auth-subtitle">Inicia sesión para continuar</p>
+
+        <div id="error-msg" class="error-msg"></div>
+
+        <div class="auth-form">
+            <input type="text" id="username" placeholder="Usuario" />
+            <input type="password" id="password" placeholder="Contraseña" />
+            <button onclick="iniciarSesion()">Iniciar Sesión</button>
+        </div>
+
+        <p class="auth-link">¿No tienes cuenta? <a href="/registro">Regístrate</a></p>
+    </div>
+
+    <script>
+        async function iniciarSesion() {
+            const username = document.getElementById("username").value.trim();
+            const password = document.getElementById("password").value.trim();
+            const errorMsg = document.getElementById("error-msg");
+
+            if (!username || !password) {
+                errorMsg.textContent = "Completa todos los campos";
+                errorMsg.style.display = "block";
+                return;
+            }
+
+            const res = await fetch("/login", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ username, password })
+            });
+
+            if (res.ok) {
+                window.location.href = "/";
+            } else {
+                const data = await res.json();
+                errorMsg.textContent = data.error;
+                errorMsg.style.display = "block";
+            }
+        }
+
+        // Login con Enter
+        document.addEventListener("keypress", e => {
+            if (e.key === "Enter") iniciarSesion();
+        });
+    </script>
+</body>
+</html>
