@@ -1,20 +1,24 @@
 import os
 
-DB_HOST = os.environ.get("DB_HOST", "localhost")
-DB_PORT = os.environ.get("DB_PORT", "5432")
-DB_NAME = os.environ.get("DB_NAME", "Gestor-Tareas")
-DB_USER = os.environ.get("DB_USER", "postgres")
-DB_PASSWORD = os.environ.get("DB_PASSWORD", "")
+DATABASE_URL = os.environ.get("DATABASE_URL", None)
 
-print(f"DB_HOST leído: {DB_HOST}")
-print(f"DB_PORT leído: {DB_PORT}")
-print(f"DB_NAME leído: {DB_NAME}")
-print(f"DB_USER leído: {DB_USER}")
-
-DB_CONFIG = {
-    "host": DB_HOST,
-    "port": int(DB_PORT),
-    "database": DB_NAME,
-    "user": DB_USER,
-    "password": DB_PASSWORD
-}
+if DATABASE_URL:
+    import urllib.parse
+    result = urllib.parse.urlparse(DATABASE_URL)
+    DB_CONFIG = {
+        "host": result.hostname,
+        "port": result.port or 5432,
+        "database": result.path[1:],
+        "user": result.username,
+        "password": result.password
+    }
+    print(f"Conectando a: {result.hostname}")
+else:
+    DB_CONFIG = {
+        "host": "localhost",
+        "port": 5432,
+        "database": "Gestor-Tareas",
+        "user": "postgres",
+        "password": os.environ.get("DB_PASSWORD", "")
+    }
+    print("Usando base de datos local")
