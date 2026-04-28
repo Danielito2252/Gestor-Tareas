@@ -3,7 +3,7 @@ from flask_login import LoginManager, UserMixin, login_user, logout_user, login_
 from werkzeug.security import generate_password_hash, check_password_hash
 import psycopg2
 import psycopg2.extras
-from config import DB_CONFIG
+from config import DATABASE_URL, DB_CONFIG
 
 app = Flask(__name__)
 app.secret_key = "clave_secreta_Gestor-Tareas-Personal"
@@ -14,7 +14,7 @@ login_manager.login_view = "login"
 
 # ── Base de datos ──────────────────────────────────────────
 def get_db():
-    conn = psycopg2.connect(**DB_CONFIG)
+    conn = psycopg2.connect(DATABASE_URL)
     return conn
 
 def init_db():
