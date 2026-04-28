@@ -211,4 +211,8 @@ def eliminar_tarea(id):
 
 if __name__ == "__main__":
     init_db()
-    app.run(debug=True)
+    #app.run(debug=True) ##Con esto en true hace que se corra en local pero para 
+    # ## producción se recomienda dejarlo en false
+    app.run(debug=False)
+    
+    

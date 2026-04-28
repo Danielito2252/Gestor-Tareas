@@ -1,14 +1,3 @@
-""""
-Para correrlo local  
-DB_CONFIG = {
-    "host": "localhost",
-    "port": 5432,
-    "database": "Gestor-Tareas",
-    "user": "postgres",
-    "password": "4024"  # ← cambia esto
-}
-"""
-
 import os
 
 DB_CONFIG = {
