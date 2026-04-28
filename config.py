@@ -1,7 +1,7 @@
 import os
 import urllib.parse
 
-DATABASE_URL = os.environ.get("DATABASE_URL", None)
+DATABASE_URL = os.environ.get("DATABASE_URL", "").strip()   
 
 if DATABASE_URL:
     result = urllib.parse.urlparse(DATABASE_URL)
