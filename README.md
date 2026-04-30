@@ -107,6 +107,7 @@ http://127.0.0.1:5000
 ---
 
 ## 📁 Estructura del proyecto
+```
 Gestor-Tareas-Personal/
 │
 ├── static/
@@ -126,7 +127,7 @@ Gestor-Tareas-Personal/
 ├── Procfile             # Configuración para despliegue en Render
 ├── .env                 # Variables de entorno locales (NO incluido en repo)
 └── README.md            # Este archivo
-
+```
 ---
 
 ## 🔐 Variables de entorno
