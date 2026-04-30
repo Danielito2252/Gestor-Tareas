@@ -1,38 +1,79 @@
 <!DOCTYPE html>
+<!-- ──────────────────────────────────────────────────────────
+     index.html — Página principal de la aplicación
+     Solo es accesible si el usuario está autenticado.
+     Flask-Login redirige a /login si no hay sesión activa.
+     
+     Datos dinámicos recibidos desde Flask:
+     - {{ username }} → nombre del usuario autenticado
+     ────────────────────────────────────────────────────────── -->
 <html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mis Tareas</title>
+
+    <!-- MEJORA 2 — Título dinámico con el nombre del usuario -->
+    <title>{{ username }} — Mis Tareas</title>
+
+    <!-- MEJORA 3 — Favicon con emoji directamente en el HTML, sin archivo extra -->
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg'><text y='32' font-size='32'>📝</text></svg>">
+
     <link rel="stylesheet" href="/static/style.css">
 </head>
 <body>
     <div class="container">
 
+        <!-- ── Header ─────────────────────────────────────────
+             Muestra el título de la app y la información del
+             usuario autenticado con opción de cerrar sesión.
+             {{ username }} es reemplazado por Flask con el
+             nombre real del usuario en cada request.
+        ──────────────────────────────────────────────────── -->
         <div class="header">
             <h1>📝 Mis Tareas</h1>
             <div class="user-info">
                 <span>👤 {{ username }}</span>
+                <!-- Redirige a /logout que cierra la sesión en Flask -->
                 <a href="/logout" class="btn-logout">Salir</a>
             </div>
         </div>
 
+        <!-- ── Formulario de nueva tarea ──────────────────────
+             Contiene todos los campos para crear una tarea.
+             Al hacer click en "Agregar" o presionar Enter
+             se llama a agregarTarea() en script.js
+        ──────────────────────────────────────────────────── -->
         <div class="input-group">
-            <input type="text" id="nueva-tarea" placeholder="¿Qué tienes que hacer?" />
+            <!-- MEJORA 1 — maxlength limita el título a 200 caracteres
+                 en el frontend, consistente con la validación del backend -->
+            <input type="text" id="nueva-tarea" placeholder="¿Qué tienes que hacer?" maxlength="200" />
+
+            <!-- Fecha límite opcional — se envía como null si está vacío -->
             <input type="date" id="fecha-limite" />
+
+            <!-- Selector de prioridad — valores: alta, media, baja -->
             <select id="prioridad">
                 <option value="alta">🔴 Alta</option>
                 <option value="media" selected>🟡 Media</option>
                 <option value="baja">🟢 Baja</option>
             </select>
+
+            <!-- Selector de categoría — valores: trabajo, estudios, personal -->
             <select id="categoria">
                 <option value="trabajo">💼 Trabajo</option>
                 <option value="estudios">📚 Estudios</option>
                 <option value="personal" selected>🏠 Personal</option>
             </select>
+
             <button onclick="agregarTarea()">Agregar</button>
         </div>
 
+        <!-- ── Contador de tareas ──────────────────────────────
+             Muestra en tiempo real cuántas tareas hay en total,
+             cuántas están pendientes y cuántas completadas.
+             Los valores son actualizados por actualizarContador()
+             en script.js cada vez que cambia la lista.
+        ──────────────────────────────────────────────────── -->
         <div class="contador">
             <div class="contador-item">
                 <span id="total">0</span>
@@ -48,14 +89,32 @@
             </div>
         </div>
 
+        <!-- ── Filtros por estado ──────────────────────────────
+             Permite ver todas las tareas, solo las pendientes
+             o solo las completadas.
+             El botón activo se resalta con la clase "activo".
+             La lógica está en cambiarFiltro() en script.js
+        ──────────────────────────────────────────────────── -->
         <div class="filtros">
             <button class="btn-filtro activo" onclick="cambiarFiltro('todas', this)">📋 Todas</button>
             <button class="btn-filtro" onclick="cambiarFiltro('pendientes', this)">⏳ Pendientes</button>
             <button class="btn-filtro" onclick="cambiarFiltro('completadas', this)">✅ Completadas</button>
         </div>
 
+        <!-- ── Búsqueda y ordenamiento ─────────────────────────
+             Buscador: filtra tareas en tiempo real mientras
+             el usuario escribe, sin llamadas al backend.
+             
+             Orden: permite ordenar por más reciente, nombre,
+             prioridad o fecha límite.
+             
+             Ambos funcionan juntos y se combinan con los filtros.
+        ──────────────────────────────────────────────────── -->
         <div class="busqueda-orden">
+            <!-- oninput se dispara en cada tecla presionada -->
             <input type="text" id="buscador" placeholder="🔍 Buscar tarea..." oninput="buscar(this.value)" />
+
+            <!-- onchange se dispara cuando el usuario selecciona una opción -->
             <select id="orden" onchange="cambiarOrden(this.value)">
                 <option value="reciente">🕐 Más reciente</option>
                 <option value="nombre">🔤 Nombre</option>
@@ -64,10 +123,18 @@
             </select>
         </div>
 
+        <!-- ── Lista de tareas ─────────────────────────────────
+             Contenedor vacío que se llena dinámicamente
+             con JavaScript a través de renderizarTareas()
+             en script.js. Nunca se escribe HTML aquí
+             directamente.
+        ──────────────────────────────────────────────────── -->
         <ul id="lista-tareas"></ul>
 
     </div>
 
+    <!-- Script al final del body para que el DOM esté listo antes
+         de que JavaScript intente acceder a los elementos HTML -->
     <script src="/static/script.js"></script>
 </body>
 </html>

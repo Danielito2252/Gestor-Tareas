@@ -1,4 +1,4 @@
-# 📝 Todo App — Gestor de Tareas Personal
+# 📝 Gestor de Tareas Personal
 
 Aplicación web fullstack para gestionar tareas personales, construida con Flask, PostgreSQL y JavaScript vanilla.
 
@@ -16,6 +16,8 @@ Aplicación web fullstack para gestionar tareas personales, construida con Flask
 
 ### App principal
 ![App](screenshots/app.png)
+
+---
 
 ## ✨ Funcionalidades
 
@@ -39,6 +41,7 @@ Aplicación web fullstack para gestionar tareas personales, construida con Flask
 | Backend | Python, Flask, Flask-Login |
 | Base de datos | PostgreSQL |
 | Seguridad | Werkzeug (hash de contraseñas) |
+| Despliegue | Render |
 
 ---
 
@@ -46,62 +49,64 @@ Aplicación web fullstack para gestionar tareas personales, construida con Flask
 
 ### Requisitos previos
 - Python 3.x
-- PostgreSQL 16
+- PostgreSQL instalado y corriendo
+- Git
 
 ### Pasos
 
-1. Clona el repositorio
-bash
+**1. Clona el repositorio**
+```bash
 git clone https://github.com/Danielito2252/Gestor-Tareas-.git
 cd Gestor-Tareas-Personal
+```
 
-
-2. Crea y activa el entorno virtual
-bash
+**2. Crea y activa el entorno virtual**
+```bash
 python -m venv venv
 venv\Scripts\activate  # Windows
+```
 
-
-3. Instala las dependencias
-bash
+**3. Instala las dependencias**
+```bash
 pip install -r requirements.txt
+```
 
+**4. Crea la base de datos en PostgreSQL**
 
-4. Crea el archivo de configuración
-bash
-# Crea un archivo config.py con tus credenciales de PostgreSQL
+Abre pgAdmin o psql y ejecuta:
+```sql
+CREATE DATABASE "Gestor-Tareas";
+```
 
+**5. Crea el archivo de variables de entorno**
 
-python
-DB_CONFIG = {
-    "host": "localhost",
-    "port": 5432,
-    "database": "Gestor-Tareas",
-    "user": "postgres",
-    "password": "TU_CONTRASEÑA"
-}
+Crea un archivo `.env` en la raíz del proyecto con este contenido:
+DB_PASSWORD=tu_contraseña_de_postgres
 
+> ⚠️ Este archivo no se sube a GitHub porque contiene información sensible.
+> Nunca lo compartas ni lo incluyas en tus commits.
 
-5. Crea la base de datos en PostgreSQL
-sql
-CREATE DATABASE Gestor-Tareas;
+**6. Inicializa la base de datos**
+```bash
+python init.py
+```
 
+Deberías ver:
+Usando base de datos local en localhost
+Inicializando base de datos...
+✓ Base de datos lista!
 
-6. Corre la aplicación
-bash
+**7. Corre la aplicación**
+```bash
 python app.py
+```
 
-
-7. Abre en tu navegador
-
+**8. Abre en tu navegador**
 http://127.0.0.1:5000
-
 
 ---
 
 ## 📁 Estructura del proyecto
-
-
 Gestor-Tareas-Personal/
 │
 ├── static/
@@ -113,26 +118,40 @@ Gestor-Tareas-Personal/
 │   ├── login.html       # Página de inicio de sesión
 │   └── registro.html    # Página de registro
 │
+├── screenshots/         # Capturas de pantalla para el README
 ├── app.py               # Backend principal (Flask)
-├── config.py            # Configuración de base de datos (no incluido en repo)
+├── config.py            # Configuración de base de datos
+├── init.py              # Inicializador de la base de datos
 ├── requirements.txt     # Dependencias del proyecto
-├── Procfile             # Configuración para despliegue
+├── Procfile             # Configuración para despliegue en Render
+├── .env                 # Variables de entorno locales (NO incluido en repo)
 └── README.md            # Este archivo
-
 
 ---
 
 ## 🔐 Variables de entorno
 
-Para producción, configura las siguientes variables de entorno:
+### En local — archivo `.env`
+Crea un archivo `.env` en la raíz del proyecto:
+DB_PASSWORD=tu_contraseña_de_postgres
+
+### En producción — Render
+Configura estas variables en Render → Environment Variables:
 
 | Variable | Descripción |
 |----------|-------------|
-| `DB_HOST` | Host de PostgreSQL |
-| `DB_PORT` | Puerto de PostgreSQL |
-| `DB_NAME` | Nombre de la base de datos |
-| `DB_USER` | Usuario de PostgreSQL |
-| `DB_PASSWORD` | Contraseña de PostgreSQL |
+| `DATABASE_URL` | URL completa de conexión a PostgreSQL |
+| `SECRET_KEY` | Clave secreta para las sesiones de Flask |
+
+---
+
+## 🌐 Demo en línea
+
+La app está desplegada en Render:
+👉 [https://gestor-tareas-5w65.onrender.com/](https://gestor-tareas-5w65.onrender.com)
+
+> 💤 Al estar en el plan gratuito, la app puede tardar unos segundos en cargar
+> si estuvo inactiva. Esto es normal.
 
 ---
 

@@ -1,9 +1,24 @@
 <!DOCTYPE html>
+<!-- ──────────────────────────────────────────────────────────
+     registro.html — Página de registro de nuevos usuarios
+     Accesible sin autenticación.
+     
+     Flujo:
+     1. Usuario ingresa username y contraseña (x2)
+     2. Se valida en frontend que las contraseñas coincidan
+     3. Se envían al backend /registro via fetch (POST)
+     4. Si es exitoso → redirige a /login después de 1.5s
+     5. Si falla → muestra mensaje de error
+     ────────────────────────────────────────────────────────── -->
 <html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Registro</title>
+
+    <!-- MEJORA 1 — Favicon consistente con el resto de la app -->
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg'><text y='32' font-size='32'>📝</text></svg>">
+
+    <title>Registro — Mis Tareas</title>
     <link rel="stylesheet" href="/static/style.css">
 </head>
 <body>
@@ -11,14 +26,41 @@
         <h1>📝 Mis Tareas</h1>
         <p class="auth-subtitle">Crea tu cuenta</p>
 
+        <!-- Contenedores de mensajes — ocultos por defecto mediante CSS
+             error-msg   → se muestra cuando hay un error
+             success-msg → se muestra cuando el registro es exitoso -->
         <div id="error-msg" class="error-msg"></div>
         <div id="success-msg" class="success-msg"></div>
 
+        <!-- ── Formulario de registro ──────────────────────────
+             No usamos <form> para evitar el comportamiento
+             por defecto del navegador (recarga de página).
+             En su lugar manejamos el submit con JavaScript.
+        ──────────────────────────────────────────────────── -->
         <div class="auth-form">
-            <input type="text" id="username" placeholder="Usuario" />
-            <input type="password" id="password" placeholder="Contraseña" />
-            <input type="password" id="password2" placeholder="Confirmar contraseña" />
-            <button onclick="registrarse()">Crear cuenta</button>
+            <!-- MEJORA 2 — autocomplete ayuda al navegador a
+                 sugerir un nombre de usuario -->
+            <input type="text"
+                   id="username"
+                   placeholder="Usuario"
+                   maxlength="100"
+                   autocomplete="username" />
+
+            <!-- MEJORA 2 — autocomplete="new-password" indica al
+                 navegador que es una contraseña nueva, no una guardada -->
+            <input type="password"
+                   id="password"
+                   placeholder="Contraseña"
+                   autocomplete="new-password" />
+
+            <input type="password"
+                   id="password2"
+                   placeholder="Confirmar contraseña"
+                   autocomplete="new-password" />
+
+            <!-- MEJORA 3 — id en el botón para deshabilitarlo
+                 mientras se procesa la petición al backend -->
+            <button id="btn-registro" onclick="registrarse()">Crear cuenta</button>
         </div>
 
         <p class="auth-link">¿Ya tienes cuenta? <a href="/login">Inicia sesión</a></p>
@@ -31,38 +73,78 @@
             const password2 = document.getElementById("password2").value.trim();
             const errorMsg = document.getElementById("error-msg");
             const successMsg = document.getElementById("success-msg");
+            const btnRegistro = document.getElementById("btn-registro");
 
+            // Ocultar mensajes anteriores antes de validar de nuevo
             errorMsg.style.display = "none";
             successMsg.style.display = "none";
 
+            // ── Validaciones en el frontend ────────────────────
+            // Estas validaciones son rápidas y evitan llamadas
+            // innecesarias al backend
+
+            // Validar que todos los campos estén llenos
             if (!username || !password || !password2) {
                 errorMsg.textContent = "Completa todos los campos";
                 errorMsg.style.display = "block";
                 return;
             }
 
+            // MEJORA 4 — Validar largo mínimo de contraseña
+            // Una contraseña muy corta es insegura
+            if (password.length < 6) {
+                errorMsg.textContent = "La contraseña debe tener al menos 6 caracteres";
+                errorMsg.style.display = "block";
+                return;
+            }
+
+            // Validar que ambas contraseñas coincidan
             if (password !== password2) {
                 errorMsg.textContent = "Las contraseñas no coinciden";
                 errorMsg.style.display = "block";
                 return;
             }
 
-            const res = await fetch("/registro", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ username, password })
-            });
+            // MEJORA 3 — Deshabilitar botón mientras se procesa
+            // Evita que el usuario haga click múltiples veces
+            btnRegistro.disabled = true;
+            btnRegistro.textContent = "Creando cuenta...";
 
-            if (res.ok) {
-                successMsg.textContent = "¡Cuenta creada! Redirigiendo...";
-                successMsg.style.display = "block";
-                setTimeout(() => window.location.href = "/login", 1500);
-            } else {
-                const data = await res.json();
-                errorMsg.textContent = data.error;
+            try {
+                const res = await fetch("/registro", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ username, password })
+                });
+
+                if (res.ok) {
+                    // Registro exitoso → mostrar mensaje y redirigir al login
+                    successMsg.textContent = "¡Cuenta creada! Redirigiendo...";
+                    successMsg.style.display = "block";
+                    setTimeout(() => window.location.href = "/login", 1500);
+                } else {
+                    // Error del backend → mostrar mensaje (ej: usuario ya existe)
+                    const data = await res.json();
+                    errorMsg.textContent = data.error;
+                    errorMsg.style.display = "block";
+                }
+            } catch (error) {
+                // MEJORA 5 — Manejo de error de red
+                // Si el servidor no responde mostramos un mensaje claro
+                errorMsg.textContent = "Error de conexión. Intenta de nuevo.";
                 errorMsg.style.display = "block";
+            } finally {
+                // MEJORA 3 — Rehabilitar el botón siempre al terminar
+                // "finally" se ejecuta sin importar si hubo error o no
+                btnRegistro.disabled = false;
+                btnRegistro.textContent = "Crear cuenta";
             }
         }
+
+        // Permitir registrarse presionando Enter en cualquier campo
+        document.addEventListener("keypress", e => {
+            if (e.key === "Enter") registrarse();
+        });
     </script>
 </body>
 </html>

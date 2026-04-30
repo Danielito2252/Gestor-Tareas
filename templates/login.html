@@ -1,9 +1,24 @@
 <!DOCTYPE html>
+<!-- ──────────────────────────────────────────────────────────
+     login.html — Página de inicio de sesión
+     Accesible sin autenticación — es el punto de entrada
+     de la aplicación para usuarios no autenticados.
+     
+     Flujo:
+     1. Usuario ingresa credenciales
+     2. Se envían al backend /login via fetch (POST)
+     3. Si son correctas → redirige a /
+     4. Si son incorrectas → muestra mensaje de error
+     ────────────────────────────────────────────────────────── -->
 <html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Iniciar Sesión</title>
+
+    <!-- MEJORA 1 — Favicon consistente con el resto de la app -->
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg'><text y='32' font-size='32'>📝</text></svg>">
+
+    <title>Iniciar Sesión — Mis Tareas</title>
     <link rel="stylesheet" href="/static/style.css">
 </head>
 <body>
@@ -11,12 +26,33 @@
         <h1>📝 Mis Tareas</h1>
         <p class="auth-subtitle">Inicia sesión para continuar</p>
 
+        <!-- Contenedor de error — oculto por defecto mediante CSS
+             Se muestra solo cuando hay un error de autenticación -->
         <div id="error-msg" class="error-msg"></div>
 
+        <!-- ── Formulario de login ─────────────────────────────
+             No usamos <form> para evitar el comportamiento
+             por defecto del navegador (recarga de página).
+             En su lugar manejamos el submit con JavaScript.
+        ──────────────────────────────────────────────────── -->
         <div class="auth-form">
-            <input type="text" id="username" placeholder="Usuario" />
-            <input type="password" id="password" placeholder="Contraseña" />
-            <button onclick="iniciarSesion()">Iniciar Sesión</button>
+            <!-- MEJORA 2 — autocomplete ayuda al navegador a
+                 sugerir credenciales guardadas -->
+            <input type="text"
+                   id="username"
+                   placeholder="Usuario"
+                   autocomplete="username" />
+
+            <!-- MEJORA 2 — autocomplete="current-password" activa
+                 el gestor de contraseñas del navegador -->
+            <input type="password"
+                   id="password"
+                   placeholder="Contraseña"
+                   autocomplete="current-password" />
+
+            <!-- MEJORA 3 — id en el botón para poder deshabilitarlo
+                 mientras se procesa la petición al backend -->
+            <button id="btn-login" onclick="iniciarSesion()">Iniciar Sesión</button>
         </div>
 
         <p class="auth-link">¿No tienes cuenta? <a href="/registro">Regístrate</a></p>
@@ -27,29 +63,53 @@
             const username = document.getElementById("username").value.trim();
             const password = document.getElementById("password").value.trim();
             const errorMsg = document.getElementById("error-msg");
+            const btnLogin = document.getElementById("btn-login");
 
+            // Ocultar error anterior antes de intentar de nuevo
+            errorMsg.style.display = "none";
+
+            // Validación básica en el frontend antes de llamar al backend
             if (!username || !password) {
                 errorMsg.textContent = "Completa todos los campos";
                 errorMsg.style.display = "block";
                 return;
             }
 
-            const res = await fetch("/login", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ username, password })
-            });
+            // MEJORA 3 — Deshabilitar el botón mientras se procesa
+            // Evita que el usuario haga click múltiples veces
+            btnLogin.disabled = true;
+            btnLogin.textContent = "Iniciando...";
 
-            if (res.ok) {
-                window.location.href = "/";
-            } else {
-                const data = await res.json();
-                errorMsg.textContent = data.error;
+            try {
+                const res = await fetch("/login", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ username, password })
+                });
+
+                if (res.ok) {
+                    // Credenciales correctas → redirigir a la app principal
+                    window.location.href = "/";
+                } else {
+                    // Credenciales incorrectas → mostrar error del backend
+                    const data = await res.json();
+                    errorMsg.textContent = data.error;
+                    errorMsg.style.display = "block";
+                }
+            } catch (error) {
+                // MEJORA 4 — Manejo de error de red
+                // Si el servidor no responde, mostramos un mensaje claro
+                errorMsg.textContent = "Error de conexión. Intenta de nuevo.";
                 errorMsg.style.display = "block";
+            } finally {
+                // MEJORA 3 — Rehabilitar el botón siempre al terminar
+                // "finally" se ejecuta sin importar si hubo error o no
+                btnLogin.disabled = false;
+                btnLogin.textContent = "Iniciar Sesión";
             }
         }
 
-        // Login con Enter
+        // Permitir iniciar sesión presionando Enter en cualquier campo
         document.addEventListener("keypress", e => {
             if (e.key === "Enter") iniciarSesion();
         });

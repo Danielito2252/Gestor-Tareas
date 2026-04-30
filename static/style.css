@@ -1,14 +1,67 @@
-* { box-sizing: border-box; margin: 0; padding: 0; }
+/* ──────────────────────────────────────────────────────────────
+   style.css — Estilos globales de la aplicación
+   Organizado en secciones:
+   1. Reset y variables
+   2. Base (body y container)
+   3. Header
+   4. Formulario de nueva tarea
+   5. Contador
+   6. Filtros
+   7. Búsqueda y orden
+   8. Lista de tareas
+   9. Botones de acción
+   10. Etiquetas (fecha, prioridad)
+   11. Categorías
+   12. Autenticación (login y registro)
+   13. Notificaciones
+────────────────────────────────────────────────────────────── */
 
+
+/* ── 1. Reset y variables ─────────────────────────────────────
+   MEJORA 1 — Variables CSS centralizadas
+   Definir colores como variables permite cambiar el tema
+   completo de la app modificando solo esta sección.
+   Por ejemplo cambiar --color-primary cambia todos los
+   elementos morados de una sola vez.
+────────────────────────────────────────────────────────────── */
+:root {
+    --color-primary:     #6c63ff;   /* Morado principal */
+    --color-primary-dark:#574fd6;   /* Morado oscuro para hover */
+    --color-success:     #4caf50;   /* Verde para completar */
+    --color-warning:     #ff9800;   /* Naranja para editar/pendientes */
+    --color-danger:      #ef5350;   /* Rojo para eliminar/logout */
+    --color-text:        #1a1a2e;   /* Texto principal oscuro */
+    --color-text-light:  #555;      /* Texto secundario */
+    --color-border:      #e0e0e0;   /* Bordes grises */
+    --color-bg:          #f0f2f5;   /* Fondo de la página */
+    --border-radius:     8px;       /* Radio de bordes estándar */
+    --transition:        0.2s;      /* Duración de transiciones */
+}
+
+/* Reset básico — elimina márgenes y paddings por defecto
+   box-sizing: border-box hace que padding y border no
+   aumenten el tamaño total de los elementos */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+
+/* ── 2. Base ──────────────────────────────────────────────────
+   El body usa flexbox para centrar el contenedor horizontal
+   y verticalmente en la página.
+────────────────────────────────────────────────────────────── */
 body {
     font-family: 'Segoe UI', sans-serif;
-    background: #f0f2f5;
+    background: var(--color-bg);
     display: flex;
     justify-content: center;
     padding: 40px 16px;
     min-height: 100vh;
 }
 
+/* Contenedor principal — tarjeta blanca centrada */
 .container {
     background: white;
     border-radius: 12px;
@@ -19,7 +72,12 @@ body {
     height: fit-content;
 }
 
-/* ── Header ── */
+
+/* ── 3. Header ────────────────────────────────────────────────
+   Fila superior con el título de la app y la info del usuario.
+   space-between separa el título a la izquierda y el usuario
+   a la derecha.
+────────────────────────────────────────────────────────────── */
 .header {
     display: flex;
     justify-content: space-between;
@@ -29,7 +87,7 @@ body {
 }
 
 .header h1 {
-    color: #1a1a2e;
+    color: var(--color-text);
     font-size: 1.6rem;
     margin-bottom: 0;
 }
@@ -39,23 +97,27 @@ body {
     align-items: center;
     gap: 8px;
     font-size: 0.85rem;
-    color: #555;
-    white-space: nowrap;
+    color: var(--color-text-light);
+    white-space: nowrap;  /* Evita que el nombre se parta en dos líneas */
 }
 
 .btn-logout {
-    background: #ef5350;
+    background: var(--color-danger);
     color: white;
     padding: 6px 12px;
-    border-radius: 8px;
+    border-radius: var(--border-radius);
     text-decoration: none;
     font-size: 0.85rem;
-    transition: background 0.2s;
+    transition: background var(--transition);
 }
 
 .btn-logout:hover { background: #c62828; }
 
-/* ── Input group ── */
+
+/* ── 4. Formulario de nueva tarea ─────────────────────────────
+   flex-wrap permite que los elementos pasen a la siguiente
+   línea en pantallas pequeñas en lugar de desbordarse.
+────────────────────────────────────────────────────────────── */
 .input-group {
     display: flex;
     flex-wrap: wrap;
@@ -63,64 +125,70 @@ body {
     margin-bottom: 20px;
 }
 
+/* El input de texto ocupa el doble de espacio que los demás */
 .input-group input[type="text"] {
     flex: 2;
     min-width: 160px;
     padding: 10px 14px;
-    border: 2px solid #e0e0e0;
-    border-radius: 8px;
+    border: 2px solid var(--color-border);
+    border-radius: var(--border-radius);
     font-size: 0.95rem;
     outline: none;
-    transition: border 0.2s;
+    transition: border var(--transition);
 }
 
-.input-group input[type="text"]:focus { border-color: #6c63ff; }
+.input-group input[type="text"]:focus { border-color: var(--color-primary); }
 
 .input-group button {
     flex: 1;
     min-width: 100px;
 }
 
-/* ── Inputs generales ── */
+/* ── Inputs y selects generales ── */
 input[type="date"] {
     padding: 10px 14px;
-    border: 2px solid #e0e0e0;
-    border-radius: 8px;
+    border: 2px solid var(--color-border);
+    border-radius: var(--border-radius);
     font-size: 0.95rem;
     outline: none;
     cursor: pointer;
-    transition: border 0.2s;
+    transition: border var(--transition);
 }
 
-input[type="date"]:focus { border-color: #6c63ff; }
+input[type="date"]:focus { border-color: var(--color-primary); }
 
 select {
     padding: 10px 14px;
-    border: 2px solid #e0e0e0;
-    border-radius: 8px;
+    border: 2px solid var(--color-border);
+    border-radius: var(--border-radius);
     font-size: 0.95rem;
     outline: none;
     cursor: pointer;
     background: white;
-    transition: border 0.2s;
+    transition: border var(--transition);
 }
 
-select:focus { border-color: #6c63ff; }
+select:focus { border-color: var(--color-primary); }
 
+/* Estilo base de todos los botones */
 button {
-    background: #6c63ff;
+    background: var(--color-primary);
     color: white;
     border: none;
     padding: 10px 18px;
-    border-radius: 8px;
+    border-radius: var(--border-radius);
     cursor: pointer;
     font-size: 0.95rem;
-    transition: background 0.2s;
+    transition: background var(--transition);
 }
 
-button:hover { background: #574fd6; }
+button:hover { background: var(--color-primary-dark); }
 
-/* ── Contador ── */
+
+/* ── 5. Contador ──────────────────────────────────────────────
+   Tres tarjetas que muestran el total, pendientes y completadas.
+   Cada una tiene su propio color para identificarse rápidamente.
+────────────────────────────────────────────────────────────── */
 .contador {
     display: flex;
     gap: 12px;
@@ -133,16 +201,18 @@ button:hover { background: #574fd6; }
     padding: 12px;
     border-radius: 10px;
     background: #f5f5f5;
-    border: 2px solid #e0e0e0;
+    border: 2px solid var(--color-border);
 }
 
+/* Número grande dentro de cada tarjeta del contador */
 .contador-item span {
     display: block;
     font-size: 1.6rem;
     font-weight: 700;
-    color: #1a1a2e;
+    color: var(--color-text);
 }
 
+/* Etiqueta pequeña debajo del número */
 .contador-item label {
     font-size: 0.75rem;
     color: #888;
@@ -150,21 +220,27 @@ button:hover { background: #574fd6; }
     letter-spacing: 0.5px;
 }
 
+/* Tarjeta de pendientes — naranja */
 .contador-item.pendiente {
-    border-color: #ff9800;
+    border-color: var(--color-warning);
     background: #fff8e1;
 }
 
 .contador-item.pendiente span { color: #e65100; }
 
+/* Tarjeta de completadas — verde */
 .contador-item.completada-cnt {
-    border-color: #4caf50;
+    border-color: var(--color-success);
     background: #e8f5e9;
 }
 
 .contador-item.completada-cnt span { color: #2e7d32; }
 
-/* ── Filtros ── */
+
+/* ── 6. Filtros ───────────────────────────────────────────────
+   Tres botones que filtran la lista por estado.
+   El botón activo se resalta con el color primario.
+────────────────────────────────────────────────────────────── */
 .filtros {
     display: flex;
     gap: 8px;
@@ -174,27 +250,32 @@ button:hover { background: #574fd6; }
 .btn-filtro {
     flex: 1;
     background: #f0f2f5;
-    color: #555;
-    border: 2px solid #e0e0e0;
+    color: var(--color-text-light);
+    border: 2px solid var(--color-border);
     padding: 8px 12px;
-    border-radius: 8px;
+    border-radius: var(--border-radius);
     font-size: 0.85rem;
     cursor: pointer;
-    transition: all 0.2s;
+    transition: all var(--transition);
 }
 
 .btn-filtro:hover {
-    border-color: #6c63ff;
-    color: #6c63ff;
+    border-color: var(--color-primary);
+    color: var(--color-primary);
 }
 
+/* Botón seleccionado actualmente */
 .btn-filtro.activo {
-    background: #6c63ff;
+    background: var(--color-primary);
     color: white;
-    border-color: #6c63ff;
+    border-color: var(--color-primary);
 }
 
-/* ── Búsqueda y orden ── */
+
+/* ── 7. Búsqueda y orden ──────────────────────────────────────
+   Input de búsqueda y selector de orden en la misma fila.
+   El input ocupa más espacio que el selector (flex: 1).
+────────────────────────────────────────────────────────────── */
 .busqueda-orden {
     display: flex;
     gap: 8px;
@@ -204,22 +285,32 @@ button:hover { background: #574fd6; }
 .busqueda-orden input {
     flex: 1;
     padding: 10px 14px;
-    border: 2px solid #e0e0e0;
-    border-radius: 8px;
+    border: 2px solid var(--color-border);
+    border-radius: var(--border-radius);
     font-size: 0.95rem;
     outline: none;
-    transition: border 0.2s;
+    transition: border var(--transition);
 }
 
-.busqueda-orden input:focus { border-color: #6c63ff; }
+.busqueda-orden input:focus { border-color: var(--color-primary); }
 
 .busqueda-orden select {
     padding: 10px 14px;
     font-size: 0.85rem;
 }
 
-/* ── Lista de tareas ── */
-ul { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+
+/* ── 8. Lista de tareas ───────────────────────────────────────
+   Cada tarea es un <li> con flexbox para alinear sus elementos.
+   flex-wrap permite que los botones pasen a la siguiente línea
+   en tareas con títulos muy largos.
+────────────────────────────────────────────────────────────── */
+ul {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
 
 li {
     display: flex;
@@ -227,11 +318,12 @@ li {
     flex-wrap: wrap;
     gap: 8px;
     padding: 12px 14px;
-    border: 2px solid #e0e0e0;
-    border-radius: 8px;
-    transition: all 0.2s;
+    border: 2px solid var(--color-border);
+    border-radius: var(--border-radius);
+    transition: all var(--transition);
 }
 
+/* Tarea completada — fondo verde claro y texto tachado */
 li.completada {
     background: #f6fff8;
     border-color: #b2dfdb;
@@ -243,19 +335,31 @@ li span {
     color: #333;
 }
 
-.titulo { flex: 1; min-width: 120px; }
+/* El título ocupa todo el espacio disponible */
+.titulo {
+    flex: 1;
+    min-width: 120px;
+}
 
-li.completada span { text-decoration: line-through; color: #999; }
+/* Texto tachado para tareas completadas */
+li.completada span {
+    text-decoration: line-through;
+    color: #999;
+}
 
-/* ── Botones de acción ── */
+
+/* ── 9. Botones de acción ─────────────────────────────────────
+   Botones pequeños dentro de cada tarea.
+   Heredan el estilo base del botón pero con colores propios.
+────────────────────────────────────────────────────────────── */
 .btn-completar {
-    background: #4caf50;
+    background: var(--color-success);
     padding: 6px 12px;
     font-size: 0.8rem;
 }
 
 .btn-editar {
-    background: #ff9800;
+    background: var(--color-warning);
     padding: 6px 12px;
     font-size: 0.8rem;
 }
@@ -263,24 +367,29 @@ li.completada span { text-decoration: line-through; color: #999; }
 .btn-editar:hover { background: #e65100; }
 
 .btn-eliminar {
-    background: #ef5350;
+    background: var(--color-danger);
     padding: 6px 12px;
     font-size: 0.8rem;
 }
 
+/* Input que reemplaza al título cuando se edita una tarea */
 .input-editar {
     flex: 1;
     padding: 4px 8px;
-    border: 2px solid #6c63ff;
+    border: 2px solid var(--color-primary);
     border-radius: 6px;
     font-size: 0.95rem;
     outline: none;
 }
 
-/* ── Etiquetas ── */
+
+/* ── 10. Etiquetas ────────────────────────────────────────────
+   Píldoras de color que muestran la fecha y la prioridad.
+   border-radius: 20px les da la forma redondeada característica.
+────────────────────────────────────────────────────────────── */
 .fecha {
     font-size: 0.8rem;
-    color: #6c63ff;
+    color: var(--color-primary);
     background: #f0eeff;
     padding: 3px 8px;
     border-radius: 20px;
@@ -295,24 +404,30 @@ li.completada span { text-decoration: line-through; color: #999; }
     font-weight: 600;
 }
 
-.prioridad-alta { background: #ffe5e5; color: #c62828; }
+/* Colores específicos por nivel de prioridad */
+.prioridad-alta  { background: #ffe5e5; color: #c62828; }
 .prioridad-media { background: #fff8e1; color: #f57f17; }
-.prioridad-baja { background: #e8f5e9; color: #2e7d32; }
+.prioridad-baja  { background: #e8f5e9; color: #2e7d32; }
 
-/* ── Categorías ── */
+
+/* ── 11. Categorías ───────────────────────────────────────────
+   Encabezados que separan las tareas por categoría.
+   border: none sobreescribe el borde del li genérico.
+────────────────────────────────────────────────────────────── */
 .categoria-header {
     background: none;
     border: none;
     padding: 16px 0 6px 0;
     font-weight: 700;
     font-size: 0.95rem;
-    color: #6c63ff;
+    color: var(--color-primary);
     letter-spacing: 0.5px;
     text-transform: uppercase;
-    border-bottom: 2px solid #e0e0e0;
+    border-bottom: 2px solid var(--color-border);
     margin-top: 8px;
 }
 
+/* Mensaje cuando no hay tareas que mostrar */
 .vacio {
     text-align: center;
     color: #aaa;
@@ -322,7 +437,11 @@ li.completada span { text-decoration: line-through; color: #999; }
     background: none;
 }
 
-/* ── Auth ── */
+
+/* ── 12. Autenticación ────────────────────────────────────────
+   Estilos compartidos entre login.html y registro.html.
+   El contenedor es más angosto que el principal (400px vs 700px).
+────────────────────────────────────────────────────────────── */
 .auth-container {
     max-width: 400px;
     text-align: center;
@@ -334,6 +453,7 @@ li.completada span { text-decoration: line-through; color: #999; }
     font-size: 0.95rem;
 }
 
+/* Formulario vertical con inputs apilados */
 .auth-form {
     display: flex;
     flex-direction: column;
@@ -344,14 +464,14 @@ li.completada span { text-decoration: line-through; color: #999; }
 .auth-form input {
     width: 100%;
     padding: 12px 14px;
-    border: 2px solid #e0e0e0;
-    border-radius: 8px;
+    border: 2px solid var(--color-border);
+    border-radius: var(--border-radius);
     font-size: 0.95rem;
     outline: none;
-    transition: border 0.2s;
+    transition: border var(--transition);
 }
 
-.auth-form input:focus { border-color: #6c63ff; }
+.auth-form input:focus { border-color: var(--color-primary); }
 
 .auth-form button {
     padding: 12px;
@@ -359,35 +479,76 @@ li.completada span { text-decoration: line-through; color: #999; }
     font-weight: 600;
 }
 
+/* Enlace para cambiar entre login y registro */
 .auth-link {
     color: #888;
     font-size: 0.9rem;
 }
 
 .auth-link a {
-    color: #6c63ff;
+    color: var(--color-primary);
     text-decoration: none;
     font-weight: 600;
 }
 
 .auth-link a:hover { text-decoration: underline; }
 
+/* Mensaje de error — fondo rojo claro, oculto por defecto */
 .error-msg {
     background: #ffe5e5;
     color: #c62828;
     padding: 10px 14px;
-    border-radius: 8px;
+    border-radius: var(--border-radius);
     margin-bottom: 16px;
     font-size: 0.9rem;
     display: none;
 }
 
+/* Mensaje de éxito — fondo verde claro, oculto por defecto */
 .success-msg {
     background: #e8f5e9;
     color: #2e7d32;
     padding: 10px 14px;
-    border-radius: 8px;
+    border-radius: var(--border-radius);
     margin-bottom: 16px;
     font-size: 0.9rem;
     display: none;
+}
+
+
+/* ── 13. Notificaciones ───────────────────────────────────────
+   Mensajes temporales que aparecen en la esquina inferior
+   derecha al realizar acciones como agregar, completar
+   o eliminar tareas. Se crean dinámicamente desde script.js
+   y desaparecen solos después de 3 segundos.
+────────────────────────────────────────────────────────────── */
+.notificacion {
+    position: fixed;        /* Se posiciona relativo a la ventana */
+    bottom: 24px;
+    right: 24px;
+    padding: 12px 20px;
+    border-radius: var(--border-radius);
+    font-size: 0.9rem;
+    font-weight: 600;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    animation: fadeIn 0.3s ease;
+    z-index: 1000;          /* Siempre encima de otros elementos */
+}
+
+.notificacion-exito {
+    background: #e8f5e9;
+    color: #2e7d32;
+    border: 2px solid var(--color-success);
+}
+
+.notificacion-error {
+    background: #ffe5e5;
+    color: #c62828;
+    border: 2px solid var(--color-danger);
+}
+
+/* Animación de entrada — aparece desde abajo */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to   { opacity: 1; transform: translateY(0); }
 }
